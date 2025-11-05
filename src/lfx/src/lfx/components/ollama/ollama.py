@@ -123,7 +123,6 @@ class ChatOllamaComponent(LCModelComponent):
             name="format",
             display_name="Format",
             info="Specify the format of the output.",
-            advanced=False,
             table_schema=TABLE_SCHEMA,
             value=default_table_row,
             show=False,
@@ -222,7 +221,7 @@ class ChatOllamaComponent(LCModelComponent):
             display_name="Enable Structured Output",
             info="Whether to enable structured output in the model.",
             value=False,
-            advanced=True,
+            advanced=False,
             real_time_refresh=True,
         ),
         *LCModelComponent.get_base_inputs(),
@@ -329,12 +328,8 @@ class ChatOllamaComponent(LCModelComponent):
             return False
 
     async def update_build_config(self, build_config: dict, field_value: Any, field_name: str | None = None):
-        if field_name == "enable_structured_output":
-            if field_value:
-                build_config["format"]["show"] = True
-            else:
-                build_config["format"]["show"] = False
-            return build_config
+        if field_name == "enable_structured_output": # bind enable_structured_output boolean to format show value
+            build_config["format"]["show"] = field_value
 
         if field_name == "mirostat":
             if field_value == "Disabled":
